@@ -16,13 +16,13 @@ A sample base project using https://github.com/lyrasis/kiba-extend/[`kiba-extend
 
 Includes heavily commented/explained code for:
 
-* https://github.com/lyrasis/kiba-extend-project/blob/main/lib/ke_project.rb[configuring your project]
-* https://github.com/lyrasis/kiba-extend-project/blob/main/lib/ke_project/registry_data.rb[registering your project's jobs/files]
-* https://github.com/lyrasis/kiba-extend-project/blob/main/lib/ke_project/target_system/locations.rb[defining the jobs]
+* https://github.com/lyrasis/kiba-extend-project/blob/main/lib/demo.rb[configuring your project]
+* https://github.com/lyrasis/kiba-extend-project/blob/main/lib/demo/registry_data.rb[registering your project's jobs/files]
+* https://github.com/lyrasis/kiba-extend-project/blob/main/lib/demo/target_system/locations.rb[defining the jobs]
 * project-specific kiba transforms
-** https://github.com/lyrasis/kiba-extend-project/blob/main/lib/ke_project/transforms/locations/loc_name_reverser.rb[defining]
-** https://github.com/lyrasis/kiba-extend-project/blob/main/spec/ke_project/transforms/locations/loc_name_reverser_spec.rb[testing]
-** https://github.com/lyrasis/kiba-extend-project/blob/4e4458ee7a9ed7e56e0a5e88b82a3b6bcf1fc89d/lib/ke_project/source_system/locations.rb#L40[using in jobs]
+** https://github.com/lyrasis/kiba-extend-project/blob/main/lib/demo/transforms/locations/loc_name_reverser.rb[defining]
+** https://github.com/lyrasis/kiba-extend-project/blob/main/spec/demo/transforms/locations/loc_name_reverser_spec.rb[testing]
+** https://github.com/lyrasis/kiba-extend-project/blob/4e4458ee7a9ed7e56e0a5e88b82a3b6bcf1fc89d/lib/demo/source_system/locations.rb#L40[using in jobs]
 
 toc::[]
 
@@ -68,7 +68,7 @@ or
 
 The code is heavily commented to explain what things are doing.
 
-To understand the relationship between `lib/ke_project/registry_data.rb` and setting up jobs, I recommend you start by looking at that file and `lib/ke_project/everything_exploded.rb`, which has more comments explaining how this works. Then look at the files in `lib/ke_project/locations` for the current recommended approach.
+To understand the relationship between `lib/demo/registry_data.rb` and setting up jobs, I recommend you start by looking at that file and `lib/demo/everything_exploded.rb`, which has more comments explaining how this works. Then look at the files in `lib/demo/locations` for the current recommended approach.
 
 The source files are in the specified locations, so jobs should run. You must run the jobs to see the results.
 
@@ -80,7 +80,7 @@ Create a repository for your project https://docs.github.com/en/repositories/cre
 
 In your new repository:
 
-* global find/replace `KeProject` and `ke_project` with your project name
+* global find/replace `Demo` and `demo` with your project name
 * set your configurations as necessary
 * delete comments and stuff you aren't using
 
@@ -94,7 +94,7 @@ When naming files that correspond to said modules or classes, you downcase and s
 
 Run `bundle install` in your repo directory.
 
-Configure your project settings in your `lib/ke_project.rb` equivalent.
+Configure your project settings in your `lib/demo.rb` equivalent.
 
 Start setting up and running jobs!
 
@@ -107,9 +107,9 @@ Con:: easier to leave a necessary piece out or introduce typos/other errors
 
 == Notes on code organization
 
-With the exception of `registry_data.rb`, the structure of directories and files in `lib/ke_project` is fairly arbitrary, in the sense of how you name and structure modules and submodules, and what methods you define in different modules. For example, you _could_ define all your jobs in one big module file if you wanted.
+With the exception of `registry_data.rb`, the structure of directories and files in `lib/demo` is fairly arbitrary, in the sense of how you name and structure modules and submodules, and what methods you define in different modules. For example, you _could_ define all your jobs in one big module file if you wanted.
 
-However, the author has thus far found it useful to set up the structure has shown in the `lib/ke_project/jobs/locations` directory.
+However, the author has thus far found it useful to set up the structure has shown in the `lib/demo/jobs/locations` directory.
 
 Using Zeitwerk to handle code loading introduces a bit some constraint on how you can organize your code. As long as you follow common Ruby conventions of defining one module or class per file, and naming the file after the module or class it defines, you should be good. See https://github.com/fxn/zeitwerk#file-structure[Zeitwerk's file structure documentation] for more details.
 

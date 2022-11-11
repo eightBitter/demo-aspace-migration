@@ -3,7 +3,7 @@
 require 'kiba/extend'
 
 # Namespace for the overall project
-module KeProject
+module Demo
   module_function
 
   # @return Zeitwerk::Loader
@@ -69,7 +69,7 @@ module KeProject
     reader: true,
     constructor: proc{ |value| File.join(datadir, value) }
   # You can create configs that can be hooked into to control other behavior in your project.
-  #   This one is used by the `KeProject::RegistryData.register_type_prep_jobs`.
+  #   This one is used by the `Demo::RegistryData.register_type_prep_jobs`.
   setting :type_tables,
     default: {
       object_statuses: :status,
@@ -80,7 +80,7 @@ module KeProject
   # For instance,
   #   if locations have already been cleaned up, you can use the cleaned file as a source for a job,
   #   but if clean up has not been done, use the supplied legacy location file. See
-  #   `/lib/ke_project/everything_exploded.rb` for an example using this config setting.
+  #   `/lib/demo/everything_exploded.rb` for an example using this config setting.
   setting :locations_cleaned, default: true, reader: true
   
   # ## Override Kiba::Extend pre-job task settings
@@ -89,12 +89,12 @@ module KeProject
   #
   # - Because of how I want to specify my project :derived_dirs, I need to configure it first before
   #   using it as the :pre_job_task_directories setting value
-  # - `derived_dirs` is now a class method of the `KeProject` module
+  # - `derived_dirs` is now a class method of the `Demo` module
   # - I don't have to override all Kiba::Extend settings before setting project-specific configs
   Kiba::Extend.config.pre_job_task_run = true
   Kiba::Extend.config.pre_job_task_directories = derived_dirs
   Kiba::Extend.config.pre_job_task_backup_dir = backup_dir
-  Kiba::Extend.config.pre_job_task_action = :nuke
+  # Kiba::Extend.config.pre_job_task_action = :nuke
   Kiba::Extend.config.pre_job_task_mode = :job
 
   # ### Re-namespacing Kiba:Extend settings
@@ -103,11 +103,11 @@ module KeProject
   #   remove or change the `:registry` setting, or Thor task running will break.
   setting :registry, default: Kiba::Extend.registry, reader: true
   #
-  # Doing the following just lets us write `KeProject.delim` in our project specific code, instead of
+  # Doing the following just lets us write `Demo.delim` in our project specific code, instead of
   #   `Kiba::Extend.delim`, while ensuring a consistent default :delim is used across the board.
   setting :delim, default: Kiba::Extend.delim, reader: true
 
   
-  # This sets up your file registry. Dig into `lib/ke_project/registry_data.rb` for more details on this.
-  KeProject::RegistryData.register
+  # This sets up your file registry. Dig into `lib/demo/registry_data.rb` for more details on this.
+  Demo::RegistryData.register
 end

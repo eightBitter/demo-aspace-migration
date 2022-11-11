@@ -53,7 +53,7 @@ module Common
         data.each do |row|
           json = ArchivesSpace::Template.process(template.to_sym, row)
           response = Aspace_Client.client.post("agents/#{agent_type}", json)
-          puts response.result.success? ? "=) #{data.length - (data.find_index(row) - 1)} to go" : response.result
+          puts response.result.success? ? "=) #{data.length - data.find_index(row) - 1} to go" : response.result
           error_log << response.result if response.result.success? == false
         end
         write_path = File.join(log_path,"post_#{agent_type}_error_log.txt")
@@ -72,9 +72,9 @@ module Common
         index
       end
 
-      desc "attach_#{agent_type}", "attach #{agent_type} refs to object by matching values from the given field. assumes DATA is an array of hashes, FIELD and ROLE are strings"
+      desc "attach_#{agent_type} DATA FIELD ROLE", "attach #{agent_type} refs to object by matching values from the given field. assumes DATA is an array of hashes, FIELD and ROLE are strings"
       define_method("attach_#{agent_type}") do |data,field,role|
-        index = invoke "common:agents:make_index_#{agent_type}"
+        index = execute "common:agents:make_index_#{agent_type}"
         data.each do |record|
           variable_name = "@#{agent_type}_refs"
           # sets the variable to empty array if the referenced array is nil; otherwise sets the variable to the array

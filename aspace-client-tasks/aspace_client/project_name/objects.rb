@@ -2,6 +2,105 @@
 module Project_Name
   class Objects < Thor
 
+    desc 'make_index_aos', 'create the following index - "external_id:uri"'
+    def make_index_aos(*args)
+      data = execute 'common:objects:get_aos'
+      index = {}
+      data.each do |record|
+        unless record['external_ids'][0].nil?
+          index[record['external_ids'][0]['external_id']] = record['uri']
+        end
+      end
+      index
+    end
+
+    desc 'move_aos_child_to_parent DATA FIELD', 'move archival objects to their parent archival objects'
+    def move_aos_child_to_parent(data,field)
+      puts "making index..."
+      index = execute 'project_name:objects:make_index_aos'
+      puts "getting archival objects..."
+      api_data = execute 'common:objects:get_aos'
+      log_path = Aspace_Client.log_path
+      error_log = []
+
+      # wrapper for posting record to API
+      poster = ->(record) {
+        unless record['parent'] == nil || record['parent']['ref'] == nil
+          ref_split = record['uri'].split('/')
+          # response = Aspace_Client.client.post("#{ref_split[3]}/#{ref_split[4]}",record.to_json)
+          response = Aspace_Client.client.post("#{record['parent']['ref'].split("/")[3]}/#{record['parent']['ref'].split("/")[4]}/accept_children", "",{position: 1, children: [record['uri']]})
+          puts response.result.success? ? "=)" : response.result
+          error_log << response.result if response.result.success? == false
+        end
+      }
+
+      api_data.each do |api_record|
+        if api_record['external_ids'][0] == nil
+          matching_data = data.lazy.select {|record| "#{record['title']}^#{record['date']}" == "#{api_record['title']}^#{api_record['dates'][0]['begin']}"}.first(1)
+          unless matching_data[0] == nil && matching_data[0][field] == nil
+
+            api_record['parent'] = {"ref" => index[matching_data[0][field]]}
+
+            poster.call(api_record)
+          end
+        elsif api_record['dates'][0] == nil 
+          matching_data = data.lazy.select {|record| record['identifier'] == api_record['external_ids'][0]['external_id']}.first(1)
+
+          unless matching_data[0] == nil && matching_data[0][field] == nil
+
+            api_record['parent'] = {"ref" => index[matching_data[0][field]]}
+
+            poster.call(api_record)
+          end
+        end
+      end
+
+      # data.each do |record|
+      #   unless record[field].nil?
+      #     # connect local record with parent API record
+      #     record['parent'] = {"ref" => index[record[field]]}
+
+      #     poster ->(data) {
+      #       matching_data[0]['parent'] = record['parent']
+
+      #       ref_split = matching_data[0]['uri'].split('/')
+      #       response = Aspace_Client.client.post("#{ref_split[3]}/#{ref_split[4]}",matching_data[0].to_json)
+      #       puts response.result.success? ? "=)" : response.result
+      #       error_log << response.result if response.result.success? == false
+      #     }
+
+      #     case api_data
+      #     when api_data['dates'][0] == nil
+      #       # connect local record with matching API record
+      #       matching_data = api_data.lazy.select {|api_record| "#{record['title']}^#{record['date']}" == "#{api_record['title']}^#{api_record['dates'][0]['begin']}"}.first(1)
+
+      #       next if matching_data[0] == nil
+
+      #     when api_data['external_ids'][0] == nil
+
+      #     end
+
+      #     # # connect local record with matching API record
+      #     # matching_data = api_data.lazy.select {|api_record| "#{record['title']}^#{record['date']}" == "#{api_record['title']}^#{api_record['dates'][0]['begin']}"}.first(1)
+
+      #     # next if matching_data[0] == nil
+
+      #     # matching_data[0]['parent'] = record['parent']
+
+      #     # ref_split = matching_data[0]['uri'].split('/')
+      #     # response = Aspace_Client.client.post("#{ref_split[3]}/#{ref_split[4]}",matching_data[0].to_json)
+      #     # puts response.result.success? ? "=)" : response.result
+      #     # error_log << response.result if response.result.success? == false
+      #   end
+      # end
+
+      write_path = File.join(log_path,"move_aos_child_to_parent_error_log.txt")
+      File.open(write_path,"w") do |f|
+        f.write(error_log.join(",\n"))
+      end
+    
+    end
+    
     desc 'attach_resources PATH, FILE', 'attach resource ref to object'
     def attach_resources(path,file)
       index = invoke 'common:objects:make_index_resources'

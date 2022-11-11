@@ -1,4 +1,8 @@
-"ObjectID","ObjectNumber","TypeID","StatusID"
-1,"2022.1.1",1,3
-2,"2022.1.2",2,2
-3,"2022.2.1",3,1
+﻿Collection ID,Record Group,Record Series,Record Sub Series,Record Sub Group,Title,Date,Summary,Notes,End Date,Name,Category
+Michelle's Correspondence,Executive,Executive Correspondence,,,ACDT,3/1/2004,,,6/21/2004,"Shackelford, Jan",History~Architecture
+Michelle's Correspondence,Executive,Executive Correspondence,,,Solicitations,11/8/2002,,,8/20/2004,"Allen, Judy",History~Constituent
+Michelle's Correspondence,Executive,Archival Records,,,Solicitations,1/26/1982,Certificate of the Incorporation of the Not an Actual Fund Fund for the Not Real Center,Certificate of the Incorporation of the Not an Actual Fund Fund for the Not Real Center,,"Patson, Basil",History~Education
+Michelle's Correspondence,Executive,Executive Correspondence,,,Entertaining by,10/15/2002,,,12/20/2004,"Patson, Basil",History~Fundraising
+Michelle's Correspondence,Executive,Executive Correspondence,,,Invitations to,2/3/1996,,,,"Pelaton, Dr. David",History~Highlights
+Michelle's Correspondence,Executive,Executive Correspondence,,,General Correspondence,2/12/2002,,,,"Rondalds, Alan",History~Education
+Michelle's Correspondence,Executive,Executive Correspondence,,,Invitations to,12/26/2002,,,11/24/2003,"Allen, Judy",History~Fundraising

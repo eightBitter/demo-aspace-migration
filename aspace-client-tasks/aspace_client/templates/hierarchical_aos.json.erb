@@ -1,0 +1,9 @@
+{
+  "title": <%= data['title'].to_json %>,
+  "level": <% case data['record_type'] %><% when 'record_group' %>"recordgrp"<% when 'record_series' %>"series"<% end %>,
+  "resource": {"ref": <%= data['resource__ref'].to_json %>},
+  "external_ids": [{
+    "external_id": <%= data['identifier'].to_json %>,
+    "source": "migration matcher"
+  }]
+}

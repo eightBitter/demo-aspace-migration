@@ -10,10 +10,10 @@ kiba_spec_dir = "#{Gem.loaded_specs['kiba-extend'].full_gem_path}/spec"
   require rbfile
 end
 
-require_relative '../lib/ke_project'
+require_relative '../lib/demo'
 
 RSpec.configure do |config|
-  config.extend KeProject
+  config.extend Demo
   config.include Helpers
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = '.rspec_status'

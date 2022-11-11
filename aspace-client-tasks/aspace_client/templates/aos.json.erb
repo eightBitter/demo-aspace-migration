@@ -1,82 +1,18 @@
 {
-  "component_id": <%= data['component_id'].to_json %>,
   "title": <%= data['title'].to_json %>,
-  "resource": <%= data['resource__ref'].to_json %>,
-  "level": <%= data['level'].to_json %>,
-  <% if data['level'] == 'otherlevel' %>
-  "other_level": <%= data['other_level'].to_json %>,
-  <% end %>
-  "dates": [
-    {
-      "expression": <%= data['dates__expression'].to_json %>,
-      "label": <%= data['dates__expression__label'].to_json %>,
-      "date_type": <%= data['dates__date_type'].to_json %>
-    }
-    <% if data['dates__begin'] != nil && data['dates__end'] != nil %>
-    ,{
-      <% if data['dates__begin'] != nil %>
-      "begin": <%= data['dates__begin'].to_json %>,
-      <% end %>
-      <% if data['dates__end'] != nil %>
-      "end": <%= data['dates__end'].to_json %>,
-      <% end %>
-      "label": <%= data['dates__begin__label'].to_json %>,
-      "date_type": <%= data['dates__begin__date_type'].to_json %>
-    }
-    <% end %>
-  ],
-  "publish": <% if data['publish'] == "true" %> <%= true %> <% elsif data['publish'] == "false" %> <%= false %> <% end %>,
-  "classifications": [
-    <% data['classification__refs'].each_with_index do |classification_ref, index| %>
-    <% if index == data['classification__refs'].size - 1 %>
-    {"ref": <%= classification_ref.to_json %>}
-    <% else %>
-    {"ref": <%= classification_ref.to_json %>},
-    <% end %>
-    <% end %>
-  ],
-  "subjects": [
-    <% data['subject__refs'].each_with_index do |subject_ref, index| %>
-    <% if index == data['subject__refs'].size - 1 %>
-    {"ref": <%= subject_ref.to_json %>}
-    <% else %>
-    {"ref": <%= subject_ref.to_json %>},
-    <% end %>
-    <% end %>
-  ],
-  "linked_agents": [
-    <% if data['linked_families__refs'].empty? != true %>
-    <% data['linked_families__refs'].each_with_index.map do |linked_family_ref, index| %>
-      <% if index == data['linked_families__refs'].size - 1 %>
-      <%= linked_family_ref.to_json %>
-      <% else %>
-      <%= linked_family_ref.to_json %>,
-      <% end %>
-      <% end %>
-    <% end %>
-    <% if data['linked_families__refs'].empty? != true && data['linked_corporate__refs'].empty? != true %>
-    ,
-    <% end %>
-    <% if data['linked_corporate__refs'].empty? != true %>
-    <% data['linked_corporate__refs'].each_with_index.map do |linked_corporate_ref, index| %>
-      <% if index == data['linked_corporate__refs'].size - 1 %>
-      <%= linked_corporate_ref.to_json %>
-      <% else %>
-      <%= linked_corporate_ref.to_json %>,
-      <% end %>
-      <% end %>
-    <% end %>
-    <% if ((data['linked_families__refs'].empty? != true || data['linked_corporate__refs'].empty? != true)) && data['linked_people__refs'].empty? != true %>
-    ,
-    <% end %>
-    <% if data['linked_people__refs'].empty? != true %>
-    <% data['linked_people__refs'].each_with_index.map do |linked_person_ref, index| %>
-      <% if index == data['linked_people__refs'].size - 1 %>
-      <%= linked_person_ref.to_json %>
-      <% else %>
-      <%= linked_person_ref.to_json %>,
-      <% end %>
-      <% end %>
-    <% end %>    
-  ]
+  "dates": [{
+    "label": "creation",
+    "date_type": "inclusive",
+    "begin": <%= data['date'].to_json %><% unless data['end_date'].nil? %>,
+    "end": <%= data['end_date'].to_json %><% end %>
+  }],
+  "level": "item",
+  "resource": {"ref": <%= data['resource__ref'].to_json %>},
+  "linked_agents": [{
+    "ref": <%= data['people__refs'][0]['ref'].to_json %>,
+    "role": <%= data['people__refs'][0]['role'].to_json %>
+  }],
+  "subjects": [{
+    "ref": <%= data['subjects__refs'][0].to_json %>
+  }]
 }

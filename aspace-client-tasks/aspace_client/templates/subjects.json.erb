@@ -1,11 +1,13 @@
 {
-  "source": <%= data['subject__source'].to_json %>,
-  "vocabulary": <%= data['subject__vocabulary'].to_json %>,
+  "source": "ingest",
+  "vocabulary": "/vocabularies/1",
   "terms": [
+    <% data['subject'].each_with_index do |term,index|%>
     {
-      "term": <%= data['subject__terms__term'].to_json %>,
-      "term_type": <%= data['subject__terms__term_type'].to_json %>,
-      "vocabulary": <%= data['subject__terms__vocabulary'].to_json %>
-    }
+      "term": <%= term.to_json %>,
+      "term_type": "topical",
+      "vocabulary": "/vocabularies/1"
+    }<% unless data['subject'].length == index + 1 %>,<% end %>
+    <% end %>
   ]
 }

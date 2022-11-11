@@ -35,6 +35,6 @@ in_path = File.expand_path("~/Documents/migrations/aspace/demo-migration/demo-as
 out_path = File.expand_path("~/Documents/migrations/aspace/demo-migration/demo-aspace-migration/aspace-client-tasks/aspace_client/templates/utilities/data")
 template_path = File.expand_path("~/Documents/migrations/aspace/demo-migration/demo-aspace-migration/aspace-client-tasks/aspace_client/templates")
 
-record = Record.new(get_data(in_path,'objects_with_attachments.json')[0],get_template(template_path,'aos.json.erb'))
+record = Record.new(get_data(in_path,'subjects.json')[0],get_template(template_path,'subjects.json.erb'))
 
-record.save(out_path,'aos_templated.json')
+record.save(out_path,'subject_templated.json')

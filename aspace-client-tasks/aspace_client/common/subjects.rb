@@ -15,6 +15,13 @@ module Common
       data.flatten
     end
 
+    desc 'get_subjects_all_ids', 'retrieve API response of all subject ids. returns an array of integers'
+    def get_subjects_all_ids(*args)
+      Aspace_Client.client.use_global_repository
+      response = Aspace_Client.client.get('subjects', query: {all_ids: true})
+      data = response.result
+    end
+
     desc 'make_index', 'create the following index - "title:uri"'
     def make_index(*args)
       data = invoke 'get_subjects'
@@ -56,6 +63,17 @@ module Common
       write_path = File.join(log_path,"post_subjects_error_log.txt")
       File.open(write_path,"w") do |f|
         f.write(error_log.join(",\n"))
+      end
+    end
+
+    desc 'delete_subjects', 'delete all subjects via API'
+    def delete_subjects
+      Aspace_Client.client.use_global_repository
+      # shape: [1,2,3]
+      data = execute 'common:subjects:get_subjects_all_ids'
+      data.each do |id|
+        response = Aspace_Client.client.delete("subjects/#{id}")
+        puts response.result.success? ? "=) #{data.length - data.find_index(id) - 1} to go" : response.result
       end
     end
 

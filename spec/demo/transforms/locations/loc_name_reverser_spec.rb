@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe KeProject::Transforms::Locations::LocNameReverser do
+RSpec.describe Demo::Transforms::Locations::LocNameReverser do
   subject(:xform){ described_class.new(**params) }
 
   describe '#process' do
