@@ -10,113 +10,29 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-= `kiba-extend` project sample
+= Demo ASpace migration
 
-A sample base project using https://github.com/lyrasis/kiba-extend/[`kiba-extend`].
+This repo demonstrates a typical custom ArchivesSpace data migration at Lyrasis. There are three main components that make up this repo:
 
-Includes heavily commented/explained code for:
+* https://github.com/lyrasis/kiba-extend/[`kiba-extend`] - a suite of Kiba extensions useful in transforming and reshaping data
+* https://github.com/lyrasis/aspace-client-tasks[`aspace-client-tasks`] - a collection of thor tasks for processing data and interacting with the ASpace API 
+* https://github.com/lyrasis/kiba-extend-project[`kiba-extend-project`] - a sample ETL project using kiba-extend. The top half of this repo is generated using this template.
 
-* https://github.com/lyrasis/kiba-extend-project/blob/main/lib/demo.rb[configuring your project]
-* https://github.com/lyrasis/kiba-extend-project/blob/main/lib/demo/registry_data.rb[registering your project's jobs/files]
-* https://github.com/lyrasis/kiba-extend-project/blob/main/lib/demo/target_system/locations.rb[defining the jobs]
-* project-specific kiba transforms
-** https://github.com/lyrasis/kiba-extend-project/blob/main/lib/demo/transforms/locations/loc_name_reverser.rb[defining]
-** https://github.com/lyrasis/kiba-extend-project/blob/main/spec/demo/transforms/locations/loc_name_reverser_spec.rb[testing]
-** https://github.com/lyrasis/kiba-extend-project/blob/4e4458ee7a9ed7e56e0a5e88b82a3b6bcf1fc89d/lib/demo/source_system/locations.rb#L40[using in jobs]
+== kiba-extend
 
-toc::[]
+`kiba-extend` is used to perform the bulk of the transformations needed to get data from its source format into something ASpace expects. You'll see the transformation jobs defined in link:./lib/demo/jobs[./lib/demo/jobs].
 
-== Prerequisites
+link:./lib/demo/registry_data.rb[./lib/demo/registry_data.rb] contains all of the in and out registries that are used by the transformation jobs to grab data from a source file and save transformed data to a target file.
 
-You must have a modern Ruby installed. This should work with 3.1.0 and up.
+== aspace-client-tasks
 
-TIP: It is highly recommended you use a version manager. The author is using https://github.com/rbenv/rbenv[rbenv].
+`aspace-client-tasks` is built on top of the https://github.com/lyrasis/archivesspace-client[`archivesspace-client`] gem. I use `aspace-client-tasks` to perform any additional data transformation that ASpace expects that kiba-extend is unable to do. An example of this is building hierarchical archival object records from tabular references. See link:./aspace-client-tasks/aspace_client/project_name/hierarchy.rb[./aspace-client-tasks/aspace_client/project_name/hierarchy.rb]. 
 
-== Try it out
+Common API tasks include:
 
-=== Set it up
+* Getting data from ASpace
+* Attaching ASpace data to data that's about to go into ASpace. For example, attaching agent and subject records to incoming object records.
+* Sending data to ASpace
+* Moving data around in ASpace. For example, moving child records under their parents.
 
-Clone this repository.
-
-`cd` into the top level of your repository.
-
-Do `bundle install`
-
-OPTIONAL: Add `kiba-extend-project/bin` to your PATH so you can run commands without needing to type `bundle exec` each time.
-
-=== Try some commands
-
-Now you should be able to run the thor tasks for the project. In your terminal, get a list of the project's defined files/jobs:
-
-`thor reg:list`
-
-Run the `locations__to_json` job (which has the effect of running all other jobs as its dependencies):
-
-`thor run:job locations__to_json`
-
-More about the thor CLI https://lyrasis.github.io/kiba-extend/file.cli.html[here].
-
-=== Run the tests
-
-`rspec`
-
-or
-
-`bundle exec rake spec`
-
-=== Explore the code and the data
-
-The code is heavily commented to explain what things are doing.
-
-To understand the relationship between `lib/demo/registry_data.rb` and setting up jobs, I recommend you start by looking at that file and `lib/demo/everything_exploded.rb`, which has more comments explaining how this works. Then look at the files in `lib/demo/locations` for the current recommended approach.
-
-The source files are in the specified locations, so jobs should run. You must run the jobs to see the results.
-
-
-== Start your own project
-
-=== Option 1: Use this repo as a template
-Create a repository for your project https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template[using this repository as a template].
-
-In your new repository:
-
-* global find/replace `Demo` and `demo` with your project name
-* set your configurations as necessary
-* delete comments and stuff you aren't using
-
-[NOTE]
-.Ruby conventions for naming
-====
-Camel case is for names of modules and classes in your code.
-
-When naming files that correspond to said modules or classes, you downcase and separate with underscore instead of camel casing.
-====
-
-Run `bundle install` in your repo directory.
-
-Configure your project settings in your `lib/demo.rb` equivalent.
-
-Start setting up and running jobs!
-
-=== Option 2: Build your project manually following patterns in this repo
-
-Pro:: less tedious find/replace and deleting stuff
-Con:: easier to leave a necessary piece out or introduce typos/other errors
-
-
-
-== Notes on code organization
-
-With the exception of `registry_data.rb`, the structure of directories and files in `lib/demo` is fairly arbitrary, in the sense of how you name and structure modules and submodules, and what methods you define in different modules. For example, you _could_ define all your jobs in one big module file if you wanted.
-
-However, the author has thus far found it useful to set up the structure has shown in the `lib/demo/jobs/locations` directory.
-
-Using Zeitwerk to handle code loading introduces a bit some constraint on how you can organize your code. As long as you follow common Ruby conventions of defining one module or class per file, and naming the file after the module or class it defines, you should be good. See https://github.com/fxn/zeitwerk#file-structure[Zeitwerk's file structure documentation] for more details.
-
-== More documentation
-
-* https://lyrasis.github.io/kiba-extend/[kiba-extend documentation]
-** transforms
-*** https://lyrasis.github.io/kiba-extend/Kiba/Extend/Transforms.html[documentation]
-*** a lot of the documentation still needs to be written, but all the examples in the docs are tested in the kiba-extend spec. Consult https://github.com/lyrasis/kiba-extend/tree/main/spec/kiba/extend/transforms[the tests] for examples of what each undocumented transform does. 
-** https://lyrasis.github.io/kiba-extend/file_list.html[List of non-code-specific documentation pages] that give a bigger picture explanation, or provide a reference
+To learn more about how this piece is structured and used, see the https://github.com/lyrasis/aspace-client-tasks[`aspace-client-tasks` repo]
